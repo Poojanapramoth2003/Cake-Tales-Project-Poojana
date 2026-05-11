@@ -1,0 +1,82 @@
+{% extends 'base.html' %} 
+{% block section %}
+<section class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3 class="card-title text-center text-primary mb-4">My Orders</h3>
+
+          {% for order in request.user.order_set.all %}
+
+          <div class="card shadow-sm mb-4">
+            <div class="card-body border-bottom">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+                  <p><strong>Date:</strong> {{ order.created_at }}</p>
+                  <p>
+                    <strong>Payment Method:</strong> {{ order.payment_method }}
+                  </p>
+              <p><strong>Delivery Address:</strong> {{ order.delivery_address.house_or_building_name }},{{ order.delivery_address.landmark }},{{ order.delivery_address.place }},{{ order.delivery_address.pincode }}
+              </p>
+                  <p>
+                    <strong>Transaction ID:</strong> {{ order.transaction_id }}
+                  </p>
+                  <p><strong>Total:</strong> ₹{{ order.total_price }}</p>
+                </div>
+
+                <div class="text-end">
+                  <p><strong>Total:</strong> ₹{{ order.total_price }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="row g-4">
+                {% for cake in order.cakes.all %}
+                <div class="col-12">
+                  <div class="card shadow-sm">
+                    <div class="row g-0 align-items-center">
+                      <div class="col-md-4">
+                        {% if cake.photo %}
+                        <img
+                          src="{{ cake.photo.url }}"
+                          style="width: 200px; height: 250px; object-fit: cover"
+                          class="rounded-start"
+                        />
+                        {% else %}
+                        <img src="https://via.placeholder.com/200x250" />
+                        {% endif %}
+                      </div>
+
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ cake.name }}</h5>
+
+                          <p class="text-muted small">{{ cake.description }}</p>
+
+                          <p class="fw-bold text-success">₹ {{ cake.price }}</p>
+
+                          <p class="fw-bold">Weight: {{ cake.weight.name }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted">No cakes in this order</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          {% empty %}
+          <div class="alert alert-warning text-center">No orders found</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'cakes',
     'authentication',
+    'payment',
 ]
 
 MIDDLEWARE = [
@@ -77,13 +78,10 @@ WSGI_APPLICATION = 'cake_tales.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-DATABASES = {
+if config('ENVIRONMENT') == 'development':
+
+
+    DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME'),
@@ -93,6 +91,16 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+else:
+
+    DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
 
 
 # Password validation

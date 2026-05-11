@@ -5,8 +5,16 @@ from . import views
 urlpatterns=[
 
     path('login/',views.LoginView.as_view(),name="login"),
+
     path('logout/',views.LogoutView.as_view(),name="logout"),
+
     path('register/',views.RegisterView.as_view(),name="register"),
+    
+    path('genrate-otp/',views.GenerateOTPView.as_view(),name="generate-otp"),
+
+    path('set-password/',views.SetPasswordView.as_view(),name="set-password"),
+
+    path('forgot-password/',views.ForgotPasswordView.as_view(),name="forgot-password"),
 
 
 ]

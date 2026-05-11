@@ -2,6 +2,8 @@ from django.db import models
 
 import uuid
 
+from django.db.models import Sum
+
 # Create your models here.
 
 class BaseClass(models.Model):
@@ -173,6 +175,100 @@ class Wishlist(BaseClass):
         verbose_name = 'Wishlists'
         
         verbose_name_plural = 'Wishlists'
+
+class Cart(BaseClass):
+
+    user = models.OneToOneField('authentication.Profile',on_delete=models.CASCADE)
+
+    cakes = models.ManyToManyField('Cake')
+
+    def __str__(self):
+
+        return f'{self.user.username} cart'
+    
+    class Meta:
+
+        verbose_name = 'Carts'
+        
+        verbose_name_plural = 'Carts'
+
+    @property
+    def get_total(self):
+
+        total = self.cakes.aggregate(total=Sum('price')).get('total')
+
+        return total if total else 0
+
+class PaymentMethodChoice(models.TextChoices):
+
+    COD = 'COD','COD'
+
+    ONLINE ='Online','Online'
+
+class DeliveryAddress(BaseClass):
+    
+    user = models.ForeignKey('authentication.Profile',on_delete=models.CASCADE,related_name='deliveryaddress')
+
+    house_or_building_name = models.CharField(max_length=30)
+
+    landmark = models.CharField(max_length=20)
+
+    place =models.CharField(max_length=15)
+
+    pincode = models.CharField(max_length=6)
+
+    def __str__(self):
+
+        return f'{self.user.username} Delivery Addresses'
+    
+    class Meta:
+
+        verbose_name = 'Delivery Addresses'
+        
+        verbose_name_plural = 'Delivery Addresses'
+
+
+
+
+class Order(BaseClass):
+
+    user = models.ForeignKey('authentication.Profile',on_delete=models.CASCADE)
+
+    order_id = models.CharField(max_length=10)
+
+    cakes = models.ManyToManyField('Cake')
+
+    total_price = models.FloatField()
+
+    payment_method = models.CharField(max_length=10,choices=PaymentMethodChoice.choices,null=True,blank=True)
+
+    delivery_address = models.ForeignKey('DeliveryAddress',on_delete=models.CASCADE,null=True,blank=True)
+
+    order_placed = models.BooleanField(default=False)
+
+    ordered_at = models.DateTimeField(auto_now_add=True)
+
+    transaction_id = models.CharField(max_length=100)    
+
+
+    def __str__(self):
+
+        return f'{self.user.username}-{ self.order_id}'
+    
+    class Meta:
+
+        verbose_name = 'Orders'
+        
+        verbose_name_plural = 'Orders'
+
+
+
+
+    
+
+
+
+
     
 
 
